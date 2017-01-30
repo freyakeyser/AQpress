@@ -1,0 +1,156 @@
+#' Propagule pressure calculation
+
+#' calcAQpress will calculate propagule pressure for rivers using information on the locations and use of aquaculture sites.
+
+#' All coordinates must be in decimal degrees, with E/W hemisphere specified using +/-
+#' Make sure that all of your coordinates are in the water. There is a check in this function that will fail if coordinates are not properly placed.
+#' This means that river coordinates should be assigned to the river's mouth. Using an upstream location will fail, as the raster resolution may place such locations on land.
+#' @param AQsites Your aquaculture site dataframe. Must have columns: Site.ID, Lat, Long, prov
+#' @param rivercoords Your river coordinate dataframe. Must have columns: River, Lat, Long
+#' @param inventory Your inventory dataframe. Must have columns: Site.ID, Lat, Long, Year, prov, totalfish (* totalfish does not have to be 100% accurate as it will be replaced by 1's to indicate that a site was stocked in a given year. Do not include 0's.)
+#' @param dir = directory where you would like to write csv files
+#' @examples
+#' calcAQpress(AQsites=df1, rivercoords=df2, inventory=df3, dir="C:/Users/doej/Documents/Data")
+
+calcAQpress <- function(AQsites, rivercoords, inventory, dir){
+
+  if(!("plyr" %in% rownames(utils::installed.packages()))){
+    stop("package 'plyr' must be installed")
+  }
+  if(!("dplyr" %in% rownames(utils::installed.packages()))){
+    stop("package 'dplyr' must be installed")
+  }
+
+  if(!("reshape2" %in% rownames(utils::installed.packages()))){
+    stop("package 'reshape2' must be installed")
+  }
+  if(!("raster" %in% rownames(utils::installed.packages()))){
+    stop("package 'raster' must be installed")
+  }
+  if(!("rgeos" %in% rownames(utils::installed.packages()))){
+    stop("package 'rgeos' must be installed")
+  }
+  if(!("gdistance" %in% rownames(utils::installed.packages()))){
+    stop("package 'gdistance' must be installed")
+  }
+
+  require(plyr)
+  require(dplyr)
+  require(reshape2)
+  require(raster)
+  require(rgeos)
+  require(gdistance)
+
+  options(scipen = 999)
+
+  AQsites$Site.ID <- as.character(AQsites$Site.ID)
+  AQsites$Lat <- as.numeric(as.character(AQsites$Lat))
+  AQsites$Long <- as.numeric(as.character(AQsites$Long))
+
+  rivercoords$River <- as.character(rivercoords$River)
+  rivercoords$Lat <- as.numeric(as.character(rivercoords$Lat))
+  rivercoords$Long <- as.numeric(as.character(rivercoords$Long))
+
+  inventory$Site.ID <- as.character(inventory$Site.ID)
+  inventory$Lat <- as.numeric(as.character(inventory$Lat))
+  inventory$Long <- as.numeric(as.character(inventory$Long))
+  inventory$prov <- as.character(inventory$prov)
+  inventory$totalfish <- as.numeric(as.character(inventory$totalfish))
+
+  alllong <- c(AQsites$Long, rivercoords$Long)
+  alllat <- c(AQsites$Lat, rivercoords$Lat)
+  extentAQ <- c(min(alllong)-0.5, max(alllong)+0.5, min(alllat)-0.5, max(alllat)+0.5)
+
+
+  # get shapefiles
+  NAm <- crop(getData("GADM", country=c("CAN", "USA"), level=1), extent(extentAQ))
+
+  print("(1/7) Found shapefile")
+
+  require(geosphere)
+  horizdist <- distm(c(extentAQ[1], extentAQ[3]), c(extentAQ[2], extentAQ[3]), fun=distHaversine)/1000
+  vertdist <- distm(c(extentAQ[1], extentAQ[3]), c(extentAQ[1], extentAQ[4]), fun=distHaversine)/1000
+
+  ncolrast <- ifelse(horizdist < 1000 & vertdist < 1000, round(horizdist*2,0), round(horizdist,0))
+  nrowrast <- ifelse(horizdist < 1000 & vertdist < 1000, round(vertdist*2,0), round(vertdist,0))
+
+  r <- raster(ncols=ncolrast, nrows=nrowrast)
+  extent(r) <- extentAQ
+  rasterAQ <- rasterize(NAm, r, fun="first")
+
+  # change land values to make them impassable
+  rasterAQ@data@values <- ifelse(is.na(rasterAQ@data@values)=="FALSE", 1000000, 1)
+
+  print("(2/7) Created raster from shapefile")
+
+  # make sure all sites are "in water"
+  if(any(extract(x = rasterAQ,
+                      y = SpatialPoints(coords = cbind(alllong, alllat),
+                                        proj4string = CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))) >1))
+  stop("Some points are on land. Use plot(rasterAQ) and click() to adjust placement of points
+          in AQsites and rivercoords data.frames manually prior to running calcAQpress().")
+
+  print("(3/7) All coordinates are in water")
+
+  # make transitionlayers
+  trAQ <- transition(1/rasterAQ, transitionFunction=mean, directions=8)
+  trAQc <- geoCorrection(trAQ, type="c")
+
+  dAQ <- costDistance(trAQc, fromCoords = cbind(as.numeric(AQsites$Long), as.numeric(AQsites$Lat)),
+                      toCoords = cbind(as.numeric(rivercoords$Long), as.numeric(rivercoords$Lat)))
+
+  print("(4/7) Calculated least-cost distances between AQ sites and specified rivers")
+
+  dAQ <- as.data.frame(dAQ)
+  colnames(dAQ) <- rivercoords$River
+  dAQ <- cbind(dAQ, AQsites$Site.ID, as.character(AQsites$prov))
+  colnames(dAQ)[dim(dAQ)[2] - 1] <- "Site.ID"
+  colnames(dAQ)[dim(dAQ)[2]] <- "prov"
+
+  dist2AQ <- join(dAQ, inventory, type="left")
+  dist2AQ <- subset(dist2AQ, is.na(totalfish)==FALSE)
+
+  print("(5/7) Joined inventory data")
+
+  dist2AQ[,1:length(rivercoords)] <- apply(dist2AQ[,1:length(rivercoords)], 2, function(x) as.character(x))
+  dist2AQ[,1:length(rivercoords)] <- apply(dist2AQ[,1:length(rivercoords)], 2, function(x) as.numeric(x))
+
+  dist2AQ[dist2AQ == 0] <- 1000
+
+  # change totalfish to 1 (1 year)
+  dist2AQ$totalfish <- 1
+
+  # For each AQ site, caclulate total fish/distance from river
+  fishdist <- c(dist2AQ$totalfish/dist2AQ[,1:length(rivercoords)])
+  dist2AQtest <- cbind(Year=dist2AQ$Year, data.frame(fishdist))
+
+  dist2AQmelt <- melt(data=dist2AQtest, id.vars = "Year", variable.name = "River")
+
+  # For each year and river, calculate total propagule pressure
+  prop.press <- ddply(.data=dist2AQmelt, .(Year, River),
+                      summarize,
+                      prop.press = sum(value, na.rm=TRUE))
+
+  print("(6/7) Calculated and saved propagule pressure by year")
+
+  prop.press_final <- join(prop.press, rivercoords, type="left")
+
+  save1 <- paste0(dir, "/prop.press_final_", Sys.Date(), ".csv")
+
+  write.csv(x = prop.press_final, file = save1)
+
+  prop.press_avg <- ddply(.data=prop.press_final, .(River, Lat, Long),
+                           summarize,
+                           averagepress = mean(prop.press),
+                           nyears = length(unique(Year)))
+
+  print("(7/7) Calculated and saved average propagule pressure for each river")
+
+  save2 <- paste0(dir, "/prop.press_avg_", Sys.Date(), ".csv")
+
+  write.csv(x = prop.press_avg, file = save2)
+
+  }
+
+
+
