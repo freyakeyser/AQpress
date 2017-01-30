@@ -1,12 +1,11 @@
 Package: AQpress
-Type: Package
 Title: Propagule Pressure Calculation
 Version: 0.1.0
-Author: Freya Keyser
-Maintainer: <freyakeyser@gmail.com>
+Authors@R: person("Freya", "Keyser", email = "freyakeyser@gmail.com", role = c("aut", "cre"))
 Description: Calculates propagule pressure of aquaculture
     escapes for rivers specified by user
 Imports: plyr, reshape2, raster, gdistance, geosphere
+Depends: R (>= 3.3.1)
 License: GPL (>=2)
-LazyData: TRUE
-RoxygenNote: 5.0.1
+Encoding: UTF-8
+LazyData: true
