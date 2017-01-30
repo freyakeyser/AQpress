@@ -16,7 +16,7 @@
 #' @param dir The directory where you would like to write csv files
 #' @importFrom plyr join ddply
 #' @importFrom reshape2 melt
-#' @importFrom raster extent getData crop rasterize extract
+#' @importFrom raster extent getData crop rasterize extract raster
 #' @importFrom geosphere distm distHaversine
 #' @importFrom gdistance transition geoCorrection costDistance
 #' @importFrom utils write.csv
