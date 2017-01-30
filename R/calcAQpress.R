@@ -1,6 +1,6 @@
-#' Propagule pressure calculation
+#' @title Propagule pressure calculation
 
-#' calcAQpress will calculate propagule pressure for rivers using information on the locations and use of aquaculture sites.
+#' @description calcAQpress will calculate propagule pressure for rivers using information on the locations and use of aquaculture sites.
 
 #' All coordinates must be in decimal degrees, with E/W hemisphere specified using +/-
 #' Make sure that all of your coordinates are in the water. There is a check in this function that will fail if coordinates are not properly placed.
@@ -9,30 +9,16 @@
 #' @param rivercoords Your river coordinate dataframe. Must have columns: River, Lat, Long
 #' @param inventory Your inventory dataframe. Must have columns: Site.ID, Lat, Long, Year, prov, totalfish (* totalfish does not have to be 100% accurate as it will be replaced by 1's to indicate that a site was stocked in a given year. Do not include 0's.)
 #' @param dir = directory where you would like to write csv files
-#' @examples
-#' calcAQpress(AQsites=df1, rivercoords=df2, inventory=df3, dir="C:/Users/doej/Documents/Data")
+#' @importFrom plyr join
+#' @importFrom dplyr ddply
+#' @importFrom reshape2 melt
+#' @importFrom raster getData crop rasterize extract
+#' @importFrom rgeos distm
+#' @importFrom gdistance transition geoCorrection costDistance
+#' @export
+#' @rdname calcAQpress
 
 calcAQpress <- function(AQsites, rivercoords, inventory, dir){
-
-  if(!("plyr" %in% rownames(utils::installed.packages()))){
-    stop("package 'plyr' must be installed")
-  }
-  if(!("dplyr" %in% rownames(utils::installed.packages()))){
-    stop("package 'dplyr' must be installed")
-  }
-
-  if(!("reshape2" %in% rownames(utils::installed.packages()))){
-    stop("package 'reshape2' must be installed")
-  }
-  if(!("raster" %in% rownames(utils::installed.packages()))){
-    stop("package 'raster' must be installed")
-  }
-  if(!("rgeos" %in% rownames(utils::installed.packages()))){
-    stop("package 'rgeos' must be installed")
-  }
-  if(!("gdistance" %in% rownames(utils::installed.packages()))){
-    stop("package 'gdistance' must be installed")
-  }
 
   require(plyr)
   require(dplyr)
