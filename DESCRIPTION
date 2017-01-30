@@ -4,8 +4,15 @@ Version: 0.1.0
 Authors@R: person("Freya", "Keyser", email = "freyakeyser@gmail.com", role = c("aut", "cre"))
 Description: Calculates propagule pressure of aquaculture
     escapes for rivers specified by user
-Imports: plyr, reshape2, raster, gdistance, geosphere
-Depends: R (>= 3.3.1)
+Imports:
+    plyr,
+    reshape2,
+    raster,
+    gdistance,
+    geosphere
+Depends:
+    R (>= 3.3.1)
 License: GPL (>=2)
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 5.0.1
