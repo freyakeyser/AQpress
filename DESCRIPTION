@@ -1,4 +1,4 @@
-Package: calcAQpress
+Package: AQpress
 Type: Package
 Title: Propagule Pressure Calculation
 Version: 0.1.0
