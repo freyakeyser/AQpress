@@ -1,10 +1,10 @@
 Package: calcAQpress
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Propagule Pressure Calculation
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Freya Keyser
+Maintainer: Who to complain to <freyakeyser@gmail.com>
+Description: Calculates propagule pressure of aquaculture escapes for rivers specified by user
+License: 
 LazyData: TRUE
 RoxygenNote: 5.0.1
