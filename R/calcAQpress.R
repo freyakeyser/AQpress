@@ -17,7 +17,7 @@
 #' @importFrom plyr join ddply
 #' @importFrom reshape2 melt
 #' @importFrom raster extent getData crop rasterize extract
-#' @importFrom geosphere distm
+#' @importFrom geosphere distm distHaversine
 #' @importFrom gdistance transition geoCorrection costDistance
 #' @importFrom utils write.csv
 #' @export
