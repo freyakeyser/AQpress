@@ -12,7 +12,7 @@
 #' @importFrom plyr join ddply
 #' @importFrom reshape2 melt
 #' @importFrom raster getData crop rasterize extract
-#' @importFrom rgeos distm
+#' @importFrom geosphere distm
 #' @importFrom gdistance transition geoCorrection costDistance
 #' @export
 #' @rdname calcAQpress
