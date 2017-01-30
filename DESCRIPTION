@@ -2,8 +2,9 @@ Package: AQpress
 Title: Propagule Pressure Calculation
 Version: 0.1.0
 Authors@R: person("Freya", "Keyser", email = "freyakeyser@gmail.com", role = c("aut", "cre"))
-Description: Calculates propagule pressure of aquaculture
-    escapes for rivers specified by user
+Description: calcAQpress calculates propagule pressure of aquaculture
+    escapes for rivers specified by user. The function requires dataframes
+    be tidied and labelled prior to use.
 Imports:
     plyr,
     reshape2,

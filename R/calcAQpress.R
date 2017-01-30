@@ -8,15 +8,18 @@
 #' When in doubt, assign river coordinates to the river's mouth.
 #' Using an upstream location may cause the function to fail, as the raster resolution may place such locations on land.
 #'
+#' Two CSV files are created and saved to your specified working directory. prop.press_final.csv is the year-specific propagule pressure for each river. prop.press_avg.csv is the average propagule pressure for each river.
+#'
 #' @param AQsites Your aquaculture site dataframe. Must have columns: Site.ID, Lat, Long, prov
 #' @param rivercoords Your river coordinate dataframe. Must have columns: River, Lat, Long
-#' @param inventory Your inventory dataframe. Must have columns: Site.ID, Lat, Long, Year, prov, totalfish (NOTE: totalfish does not have to be perfectly accurate as it will be replaced by 1's to indicate that a site was stocked in a given year. Do not include 0's.)
+#' @param inventory Your inventory dataframe. Must have columns: Site.ID, Lat, Long, Year, prov, totalfish (Note: totalfish does not have to be perfectly accurate as it will be replaced by 1's to indicate that a site was stocked in a given year. Do not include 0's for unstocked (fallow) sites.)
 #' @param dir The directory where you would like to write csv files
 #' @importFrom plyr join ddply
 #' @importFrom reshape2 melt
 #' @importFrom raster getData crop rasterize extract
 #' @importFrom geosphere distm
 #' @importFrom gdistance transition geoCorrection costDistance
+#' @importFrom utils write.csv
 #' @export
 #' @rdname calcAQpress
 
@@ -48,7 +51,6 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir){
 
   print("(1/7) Found shapefile")
 
-  require(geosphere)
   horizdist <- distm(c(extentAQ[1], extentAQ[3]), c(extentAQ[2], extentAQ[3]), fun=distHaversine)/1000
   vertdist <- distm(c(extentAQ[1], extentAQ[3]), c(extentAQ[1], extentAQ[4]), fun=distHaversine)/1000
 
