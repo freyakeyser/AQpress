@@ -14,6 +14,7 @@
 #' @param rivercoords Your river coordinate dataframe. Must have columns: River, Lat, Long
 #' @param inventory Your inventory dataframe. Must have columns: Site.ID, Lat, Long, Year, prov, totalfish (Note: totalfish does not have to be perfectly accurate as it will be replaced by 1's to indicate that a site was stocked in a given year. Do not include 0's for unstocked (fallow) sites.)
 #' @param dir The directory where you would like to write csv files
+#' @import rgeos
 #' @importFrom plyr join ddply
 #' @importFrom reshape2 melt
 #' @importFrom raster extent getData crop rasterize extract raster
