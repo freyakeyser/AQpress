@@ -15,7 +15,7 @@
 #' @param inventory Your inventory dataframe. Must have columns: Site.ID, Lat, Long, Year, prov, totalfish (Note: totalfish does not have to be perfectly accurate as it will be replaced by 1's to indicate that a site was stocked in a given year. Do not include 0's for unstocked (fallow) sites.)
 #' @param dir The directory where you would like to write csv files
 #' @import rgeos
-#' @import plyr
+#' @importFrom dplyr group_by summarise ungroup
 #' @importFrom reshape2 melt
 #' @importFrom raster extent getData crop rasterize extract raster
 #' @importFrom geosphere distm distHaversine
@@ -92,7 +92,7 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir){
   colnames(dAQ)[dim(dAQ)[2] - 1] <- "Site.ID"
   colnames(dAQ)[dim(dAQ)[2]] <- "prov"
 
-  dist2AQ <- join(dAQ, inventory, type="left")
+  dist2AQ <- merge(dAQ, inventory, all.x=TRUE)
   dist2AQ <- subset(dist2AQ, is.na(totalfish)==FALSE)
 
   print("(5/7) Joined inventory data")
@@ -112,22 +112,31 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir){
   dist2AQmelt <- melt(data=dist2AQtest, id.vars = "Year", variable.name = "River")
 
   # For each year and river, calculate total propagule pressure
-  prop.press <- ddply(.data=dist2AQmelt, .(Year, River),
-                      summarize,
-                      prop.press = sum(value, na.rm=TRUE))
+  prop.press <- dist2AQmelt %>%
+    group_by(Year, River) %>%
+    summarise(prop.press = sum(value,na.rm=T)) %>%
+    ungroup() %>%
+    data.frame
 
   print("(6/7) Calculated and saved propagule pressure by year")
 
-  prop.press_final <- join(prop.press, rivercoords, type="left")
+  prop.press_final <- merge(prop.press, rivercoords, all.x=TRUE)
 
   save1 <- paste0(dir, "/prop.press_final_", Sys.Date(), ".csv")
 
   write.csv(x = prop.press_final, file = save1)
 
-  prop.press_avg <- ddply(.data=prop.press_final, .(River, Lat, Long),
-                           summarize,
-                           averagepress = mean(prop.press),
-                           nyears = length(unique(Year)))
+  prop.press_avg <- prop.press_final %>%
+    group_by(River, Lat, Long) %>%
+    summarise(averagepress = mean(prop.press),
+              nyears = length(unique(Year))) %>%
+    ungroup() %>%
+    data.frame
+
+    # ddply(.data=prop.press_final, .(River, Lat, Long),
+    #                        summarize,
+    #                        averagepress = mean(prop.press),
+    #                        nyears = length(unique(Year)))
 
   print("(7/7) Calculated and saved average propagule pressure for each river")
 

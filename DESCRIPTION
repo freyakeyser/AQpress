@@ -6,7 +6,7 @@ Description: calcAQpress calculates propagule pressure of aquaculture
     escapes for rivers specified by user. The function requires dataframes
     be tidied and labelled prior to use.
 Imports:
-    plyr,
+    dplyr,
     reshape2,
     raster,
     gdistance,
