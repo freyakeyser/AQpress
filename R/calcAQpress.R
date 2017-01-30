@@ -20,6 +20,7 @@
 #' @importFrom geosphere distm distHaversine
 #' @importFrom gdistance transition geoCorrection costDistance
 #' @importFrom utils write.csv
+#' @importFrom sp SpatialPoints CRS
 #' @export
 #' @rdname calcAQpress
 
