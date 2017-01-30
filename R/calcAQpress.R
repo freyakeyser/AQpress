@@ -22,13 +22,6 @@
 
 calcAQpress <- function(AQsites, rivercoords, inventory, dir){
 
-  require(plyr)
-  require(dplyr)
-  require(reshape2)
-  require(raster)
-  require(rgeos)
-  require(gdistance)
-
   options(scipen = 999)
 
   AQsites$Site.ID <- as.character(AQsites$Site.ID)

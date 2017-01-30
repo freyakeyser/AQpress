@@ -3,8 +3,10 @@ Type: Package
 Title: Propagule Pressure Calculation
 Version: 0.1.0
 Author: Freya Keyser
-Maintainer: Who to complain to <freyakeyser@gmail.com>
-Description: Calculates propagule pressure of aquaculture escapes for rivers specified by user
-License: 
+Maintainer: <freyakeyser@gmail.com>
+Description: Calculates propagule pressure of aquaculture
+    escapes for rivers specified by user
+Imports: plyr, reshape2, raster, gdistance, geosphere
+License: GPL (>=2)
 LazyData: TRUE
 RoxygenNote: 5.0.1
