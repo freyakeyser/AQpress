@@ -10,7 +10,7 @@
 #'
 #' @param AQsites Your aquaculture site dataframe. Must have columns: Site.ID, Lat, Long, prov
 #' @param rivercoords Your river coordinate dataframe. Must have columns: River, Lat, Long
-#' @param inventory Your inventory dataframe. Must have columns: Site.ID, Lat, Long, Year, prov, totalfish (* totalfish does not have to be 100% accurate as it will be replaced by 1's to indicate that a site was stocked in a given year. Do not include 0's.)
+#' @param inventory Your inventory dataframe. Must have columns: Site.ID, Lat, Long, Year, prov, totalfish (NOTE: totalfish does not have to be perfectly accurate as it will be replaced by 1's to indicate that a site was stocked in a given year. Do not include 0's.)
 #' @param dir The directory where you would like to write csv files
 #' @importFrom plyr join ddply
 #' @importFrom reshape2 melt

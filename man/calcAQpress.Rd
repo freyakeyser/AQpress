@@ -11,7 +11,7 @@ calcAQpress(AQsites, rivercoords, inventory, dir)
 
 \item{rivercoords}{Your river coordinate dataframe. Must have columns: River, Lat, Long}
 
-\item{inventory}{Your inventory dataframe. Must have columns: Site.ID, Lat, Long, Year, prov, totalfish (* totalfish does not have to be 100% accurate as it will be replaced by 1's to indicate that a site was stocked in a given year. Do not include 0's.)}
+\item{inventory}{Your inventory dataframe. Must have columns: Site.ID, Lat, Long, Year, prov, totalfish (NOTE: totalfish does not have to be perfectly accurate as it will be replaced by 1's to indicate that a site was stocked in a given year. Do not include 0's.)}
 
 \item{dir}{The directory where you would like to write csv files}
 }
