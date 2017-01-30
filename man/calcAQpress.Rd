@@ -13,12 +13,15 @@ calcAQpress(AQsites, rivercoords, inventory, dir)
 
 \item{inventory}{Your inventory dataframe. Must have columns: Site.ID, Lat, Long, Year, prov, totalfish (* totalfish does not have to be 100% accurate as it will be replaced by 1's to indicate that a site was stocked in a given year. Do not include 0's.)}
 
-\item{dir}{= directory where you would like to write csv files}
+\item{dir}{The directory where you would like to write csv files}
 }
 \description{
 calcAQpress will calculate propagule pressure for rivers using information on the locations and use of aquaculture sites.
-All coordinates must be in decimal degrees, with E/W hemisphere specified using +/-
-Make sure that all of your coordinates are in the water. There is a check in this function that will fail if coordinates are not properly placed.
-This means that river coordinates should be assigned to the river's mouth. Using an upstream location will fail, as the raster resolution may place such locations on land.
+
+Propagule pressure is calculated for each river, and is equal to the sum (for all aquaculture sites) of 1/(distance between the river and each stocked aquaculture site).
+
+All coordinates must be in decimal degrees, with E/W hemisphere specified using +/-, and all of your coordinates must be in the water.
+When in doubt, assign river coordinates to the river's mouth.
+Using an upstream location may cause the function to fail, as the raster resolution may place such locations on land.
 }
 
