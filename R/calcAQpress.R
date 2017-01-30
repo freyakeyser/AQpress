@@ -124,7 +124,7 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir){
 
   write.csv(x = prop.press_final, file = save1)
 
-  prop.press_avg <- dply(.data=prop.press_final, .(River, Lat, Long),
+  prop.press_avg <- ddply(.data=prop.press_final, .(River, Lat, Long),
                            summarize,
                            averagepress = mean(prop.press),
                            nyears = length(unique(Year)))
