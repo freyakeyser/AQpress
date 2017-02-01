@@ -57,8 +57,8 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir){
   horizdist <- distm(c(extentAQ[1], extentAQ[3]), c(extentAQ[2], extentAQ[3]), fun=distHaversine)/1000
   vertdist <- distm(c(extentAQ[1], extentAQ[3]), c(extentAQ[1], extentAQ[4]), fun=distHaversine)/1000
 
-  ncolrast <- ifelse(horizdist < 1000 & vertdist < 1000, round(horizdist*4,0), round(horizdist*2,0))
-  nrowrast <- ifelse(horizdist < 1000 & vertdist < 1000, round(vertdist*4,0), round(vertdist*2,0))
+  ncolrast <- ifelse(horizdist < 1000 & vertdist < 1000, round(horizdist*5,0), round(horizdist*3,0))
+  nrowrast <- ifelse(horizdist < 1000 & vertdist < 1000, round(vertdist*5,0), round(vertdist*3,0))
 
   r <- raster(ncols=ncolrast, nrows=nrowrast)
   extent(r) <- extentAQ
