@@ -26,21 +26,6 @@
 #' @rdname calcAQpress
 
 
-AQsites <- data.frame(Site.ID=c("A", "B", "C"), Lat=c(45.207934, 45.140265, 44.835857),
-                      Long=c(-65.621970, -65.928493, -65.431769), prov=c("NB", "NB", "NB"))
-
-rivercoords <- data.frame(River=c("a", "b", "c"), Lat=c(45.107934, 45.240265, 44.992161), Long=c(-65.521970, -65.828493, -66.573303))
-
-inventory <- data.frame(Site.ID=c(rep("A", 2), rep("B", 2), rep("C", 2)),
-                        Lat=c(rep(45.207934, 2), rep(45.140265, 2), rep(44.892161, 2)),
-                        Long=c(rep(-65.621970, 2), rep(-65.928493, 2), rep(-66.473303, 2)),
-                        Year=c(2000, 2001, 2002, 2000, 2003, 2001),
-                        prov=rep("NB", 6),
-                        totalfish=rep(1, 6))
-
-
-
-
 calcAQpress <- function(AQsites, rivercoords, inventory, dir){
 
   options(scipen = 999)
