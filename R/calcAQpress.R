@@ -85,8 +85,11 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir, saveRast){
   badvals <- join(badvals, AQsites, type="left")
   badvals <- join(badvals, rivercoords, type="left")
 
-  if(length(badvals$Long) > 0)
+  if(length(badvals$Long) > 0){
     print(badvals)
+  }
+
+  if(length(badvals$Long) > 0)
   stop("Some points are on land. Use plot(rasterAQ) and click() to adjust placement of points
           in AQsites and rivercoords data.frames manually prior to running calcAQpress(). Check printed dataframe above for failed coordinates.")
 
