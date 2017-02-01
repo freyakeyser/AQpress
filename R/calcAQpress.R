@@ -71,7 +71,7 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir){
   # change land values to make them impassable
   rasterAQ@data@values <- ifelse(is.na(rasterAQ@data@values)=="FALSE", 1000000, 1)
   rasterAQ <<- rasterAQ
-  stop()
+
   print("(2/7) Created raster from shapefile")
 
   # make sure all sites are "in water"
