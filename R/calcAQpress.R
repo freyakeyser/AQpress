@@ -26,7 +26,7 @@
 #' @rdname calcAQpress
 
 
-calcAQpress <- function(AQsites, rivercoords, inventory, dir){
+calcAQpress <- function(AQsites, rivercoords, inventory, dir, saveRast){
 
   options(scipen = 999)
 
@@ -70,7 +70,10 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir){
 
   # change land values to make them impassable
   rasterAQ@data@values <- ifelse(is.na(rasterAQ@data@values)=="FALSE", 1000000, 1)
-  rasterAQ <<- rasterAQ
+
+  if(saveRast=="TRUE"){
+  rasterAQ <<- rasterAQ}
+  else {rasterAQ <- rasterAQ}
 
   print("(2/7) Created raster from shapefile")
 
