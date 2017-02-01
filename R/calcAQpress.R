@@ -50,7 +50,7 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir, saveRast){
 
   alllong <- c(AQsites$Long, rivercoords$Long)
   alllat <- c(AQsites$Lat, rivercoords$Lat)
-  extentAQ <- c(min(alllong)-0.5, max(alllong)+0.5, min(alllat)-0.5, max(alllat)+0.5)
+  extentAQ <- c(min(alllong)-0.25, max(alllong)+0.25, min(alllat)-0.25, max(alllat)+0.25)
 
 
   # get shapefiles
