@@ -30,6 +30,10 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir){
 
   options(scipen = 999)
 
+  AQsites <- select(AQsites, Site.ID, Lat, Long, prov)
+  rivercoords <- select(rivercoords, River, Lat, Long)
+  inventory <- select(Site.ID, Lat, Long, Year, prov, totalfish)
+
   AQsites$Site.ID <- as.character(AQsites$Site.ID)
   AQsites$Lat <- as.numeric(as.character(AQsites$Lat))
   AQsites$Long <- as.numeric(as.character(AQsites$Long))
