@@ -54,7 +54,7 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir){
 
 
   # get shapefiles
-  NAm <- crop(getData("GADM", country=c("CAN", "USA"), level=1), extent(extentAQ))
+  NAm <<- crop(getData("GADM", country=c("CAN", "USA"), level=1), extent(extentAQ))
 
   print("(1/7) Found shapefile")
 
