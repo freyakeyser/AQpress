@@ -54,7 +54,7 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir){
 
 
   # get shapefiles
-  NAm <<- crop(getData("GADM", country=c("CAN", "USA"), level=1), extent(extentAQ))
+  NAm <- crop(getData("GADM", country=c("CAN", "USA"), level=1), extent(extentAQ))
 
   print("(1/7) Found shapefile")
 
@@ -70,6 +70,7 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir){
 
   # change land values to make them impassable
   rasterAQ@data@values <- ifelse(is.na(rasterAQ@data@values)=="FALSE", 1000000, 1)
+  rasterAQ <<- rasterAQ
 
   print("(2/7) Created raster from shapefile")
 
