@@ -125,7 +125,7 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir, inputRast, rastNam
 
     write.csv(x = avgdistance, file=save0)
   }
-
+  else{
   dist2AQ <- join(dAQ, inventory, type="left")
   dist2AQ <- subset(dist2AQ, is.na(totalfish)==FALSE)
 
@@ -169,7 +169,7 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir, inputRast, rastNam
 
   write.csv(x = prop.press_avg, file = save2)
 
-  }
+  }}
 
 
 
