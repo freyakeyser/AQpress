@@ -26,7 +26,7 @@
 #' @rdname calcAQpress
 
 
-calcAQpress <- function(AQsites, rivercoords, inventory, dir, saveRast){
+calcAQpress <- function(AQsites, rivercoords, inventory, dir, inputRast, rastName, saveRast, distType){
 
   options(scipen = 999)
 
@@ -52,7 +52,10 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir, saveRast){
   alllat <- c(AQsites$Lat, rivercoords$Lat)
   extentAQ <- c(min(alllong)-0.25, max(alllong)+0.25, min(alllat)-0.25, max(alllat)+0.25)
 
-
+  if(inputRast==TRUE){
+    rasterAQ <- rastName
+  }
+  else{
   # get shapefiles
   NAm <- crop(getData("GADM", country=c("CAN", "USA"), level=1), extent(extentAQ))
 
@@ -70,7 +73,7 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir, saveRast){
 
   # change land values to make them impassable
   rasterAQ@data@values <- ifelse(is.na(rasterAQ@data@values)=="FALSE", 1000000, 1)
-
+  }
   if(saveRast=="TRUE"){
   rasterAQ <<- rasterAQ}
   else {rasterAQ <- rasterAQ}
@@ -109,6 +112,19 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir, saveRast){
   dAQ <- cbind(dAQ, AQsites$Site.ID, as.character(AQsites$prov))
   colnames(dAQ)[dim(dAQ)[2] - 1] <- "Site.ID"
   colnames(dAQ)[dim(dAQ)[2]] <- "prov"
+
+  if(distType=="distance"){
+
+    distances <- melt(data=dAQ, id.vars = c("Site.ID","prov"), variable.name = "River")
+
+    avgdistance <- ddply(.data=distances, .(River),
+                         summarize,
+                         avgdist = mean(value, na.rm=TRUE))
+
+    save0 <- paste0(dir, "/avg_distance_final_", Sys.Date(), ".csv")
+
+    write.csv(x = avgdistance, file=save0)
+  }
 
   dist2AQ <- join(dAQ, inventory, type="left")
   dist2AQ <- subset(dist2AQ, is.na(totalfish)==FALSE)
