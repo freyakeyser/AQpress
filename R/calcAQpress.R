@@ -131,8 +131,8 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir, inputRast, rastNam
 
   print("(5/7) Joined inventory data")
 
-  dist2AQ[,1:length(rivercoords)] <- apply(dist2AQ[,1:length(rivercoords)], 2, function(x) as.character(x))
-  dist2AQ[,1:length(rivercoords)] <- apply(dist2AQ[,1:length(rivercoords)], 2, function(x) as.numeric(x))
+  dist2AQ[,1:length(rivercoords$Long)] <- apply(dist2AQ[,1:length(rivercoords$Long)], 2, function(x) as.character(x))
+  dist2AQ[,1:length(rivercoords$Long)] <- apply(dist2AQ[,1:length(rivercoords$Long)], 2, function(x) as.numeric(x))
 
   dist2AQ[dist2AQ == 0] <- 1000
 
@@ -140,7 +140,7 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir, inputRast, rastNam
   dist2AQ$totalfish <- 1
 
   # For each AQ site, caclulate total fish/distance from river
-  fishdist <- c(dist2AQ$totalfish/dist2AQ[,1:length(rivercoords)])
+  fishdist <- c(dist2AQ$totalfish/dist2AQ[,1:length(rivercoords$Long)])
   dist2AQtest <- cbind(Year=dist2AQ$Year, data.frame(fishdist))
 
   dist2AQmelt <- melt(data=dist2AQtest, id.vars = "Year", variable.name = "River")
