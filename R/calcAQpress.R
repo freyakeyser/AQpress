@@ -162,7 +162,7 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir, inputRast, rastNam
                            summarize,
                            averagepress = mean(prop.press),
                            nyears = length(unique(Year)),
-                           stdpress = stdev(prop.press))
+                           stdpress = sd(prop.press))
 
   print("(7/7) Calculated and saved average propagule pressure for each river")
 
