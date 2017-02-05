@@ -5,7 +5,7 @@
 \title{Propagule pressure calculation}
 \usage{
 calcAQpress(AQsites, rivercoords, inventory, dir, inputRast, rastName, saveRast,
-  distType)
+  distType, stocking)
 }
 \arguments{
 \item{AQsites}{Your aquaculture site dataframe. Must have columns: Site.ID, Lat, Long, prov}

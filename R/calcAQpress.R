@@ -26,7 +26,7 @@
 #' @rdname calcAQpress
 
 
-calcAQpress <- function(AQsites, rivercoords, inventory, dir, inputRast, rastName, saveRast, distType){
+calcAQpress <- function(AQsites, rivercoords, inventory, dir, inputRast, rastName, saveRast, distType, stocking){
 
   options(scipen = 999)
 
@@ -137,7 +137,8 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir, inputRast, rastNam
   dist2AQ[dist2AQ == 0] <- 1000
 
   # change totalfish to 1 (1 year)
-  dist2AQ$totalfish <- 1
+  if(stocking==FALSE){
+    dist2AQ$totalfish <- 1}
 
   # For each AQ site, caclulate total fish/distance from river
   fishdist <- c(dist2AQ$totalfish/dist2AQ[,1:length(rivercoords$Long)])
