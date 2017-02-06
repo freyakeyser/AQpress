@@ -134,18 +134,27 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir, inputRast, rastNam
   dist2AQ[,1:length(rivercoords$Long)] <- apply(dist2AQ[,1:length(rivercoords$Long)], 2, function(x) as.character(x))
   dist2AQ[,1:length(rivercoords$Long)] <- apply(dist2AQ[,1:length(rivercoords$Long)], 2, function(x) as.numeric(x))
 
+  print(1)
+
   dist2AQ[dist2AQ == 0] <- 1000
+
+  print(2)
 
   # change totalfish to 1 (1 year)
   if(stocking=="FALSE"){
     dist2AQ$totalfish <- 1}
 
+  print(3)
+
   # For each AQ site, caclulate total fish/distance from river
   fishdist <- c(dist2AQ$totalfish/dist2AQ[,1:length(rivercoords$Long)])
   dist2AQtest <- cbind(Year=dist2AQ$Year, data.frame(fishdist))
 
+  print(4)
+
   dist2AQmelt <- melt(data=dist2AQtest, id.vars = "Year", variable.name = "River")
 
+  print(5)
   # For each year and river, calculate total propagule pressure
   prop.press <- ddply(.data=dist2AQmelt, .(Year, River),
                       summarize,
