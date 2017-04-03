@@ -17,6 +17,7 @@
 #' @import rgeos
 #' @import plyr
 #' @import raster
+#' @importFrom dplyr colwise
 #' @importFrom reshape2 melt
 #' @importFrom geosphere distm distHaversine
 #' @importFrom gdistance transition geoCorrection costDistance
