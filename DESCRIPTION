@@ -13,7 +13,8 @@ Imports:
     geosphere,
     rgeos,
     utils,
-    sp
+    sp, 
+    dplyr
 Depends:
     R (>= 3.3.1)
 License: GPL (>=2)

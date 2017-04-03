@@ -82,7 +82,7 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir, inputRast, rastNam
 
   # make sure all sites are "in water"
   vals <- data.frame(extract(x = rasterAQ, y = SpatialPoints(coords = cbind(alllong, alllat),
-                                                          proj4string = CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))))
+                                                             proj4string = CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))))
 
   vals <- which(vals==100000)
 
@@ -95,15 +95,21 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir, inputRast, rastNam
   dAQ <- costDistance(trAQc, fromCoords = cbind(as.numeric(AQsites$Long), as.numeric(AQsites$Lat)),
                       toCoords = cbind(as.numeric(rivercoords$Long), as.numeric(rivercoords$Lat)))
 
-  badvals <- which(dAQ>3000000)
-  if (length(badvals) > 0) {
-    print(cbind(alllong[badvals], alllat[badvals]))
+  dAQ <- as.data.frame(dAQ)
+
+  test1 <- colwise(mean)
+  vals1 <- which(test1(dAQ) >3000000)
+  vals2 <- apply(dAQ[,1:length(rivercoords$Long)], 2, function(x) mean(x))
+  vals2 <- which(vals2 > 3000000)
+
+  if (length(vals1) > 0) {
+    print(rivercoords[vals1,])
   }
-  if (length(badvals) > 0)
-    stop("Some points are over 3000 km apart, which suggests that points may be on land.
-          Use plot(rasterAQ) and click() to adjust placement of points\n
-         in AQsites and rivercoords data.frames manually prior to running calcAQpress().
-         Check printed dataframe above for potential failed coordinates.")
+  if (length(vals2) > 0) {
+    print(AQsites[vals2,])
+  }
+  if (length(vals1) | length(vals2) > 0)
+    stop("Some points are over 3000 km apart, which suggests that points may be on land. Use plot(rasterAQ) and click() to adjust placement of points in AQsites and rivercoords data.frames manually prior to running calcAQpress(). Check printed dataframe above for potential failed coordinates.")
 
   print("(3/7) All coordinates are in water")
 
