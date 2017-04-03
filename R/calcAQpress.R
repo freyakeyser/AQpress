@@ -83,20 +83,10 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir, inputRast, rastNam
   # make sure all sites are "in water"
   vals <- data.frame(extract(x = rasterAQ, y = SpatialPoints(coords = cbind(alllong, alllat),
                                                           proj4string = CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))))
-  badvals <- data.frame(cbind(Long=alllong[vals>1], Lat=alllat[vals>1]))
 
-  badvals <- join(badvals, AQsites, type="left")
-  badvals <- join(badvals, rivercoords, type="left")
+  vals <- which(vals==100000)
 
-  if(length(badvals$Long) > 0){
-    print(badvals)
-  }
-
-  if(length(badvals$Long) > 0)
-  stop("Some points are on land. Use plot(rasterAQ) and click() to adjust placement of points
-          in AQsites and rivercoords data.frames manually prior to running calcAQpress(). Check printed dataframe above for failed coordinates.")
-
-  print("(3/7) All coordinates are in water")
+  rasterAQ[vals] <- 1
 
   # make transitionlayers
   trAQ <- transition(1/rasterAQ, transitionFunction=mean, directions=8)
@@ -104,6 +94,18 @@ calcAQpress <- function(AQsites, rivercoords, inventory, dir, inputRast, rastNam
 
   dAQ <- costDistance(trAQc, fromCoords = cbind(as.numeric(AQsites$Long), as.numeric(AQsites$Lat)),
                       toCoords = cbind(as.numeric(rivercoords$Long), as.numeric(rivercoords$Lat)))
+
+  badvals <- which(dAQ>3000000)
+  if (length(badvals) > 0) {
+    print(cbind(alllong[badvals], alllat[badvals]))
+  }
+  if (length(badvals) > 0)
+    stop("Some points are over 3000 km apart, which suggests that points may be on land.
+          Use plot(rasterAQ) and click() to adjust placement of points\n
+         in AQsites and rivercoords data.frames manually prior to running calcAQpress().
+         Check printed dataframe above for potential failed coordinates.")
+
+  print("(3/7) All coordinates are in water")
 
   print("(4/7) Calculated least-cost distances between AQ sites and specified rivers")
 
